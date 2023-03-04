@@ -14,7 +14,7 @@ public class InstrumentWebSocketConfiguration {
         WebSocketConnectionManager manager = new WebSocketConnectionManager(
                 instrumentWebSocketClient(),
                 instrumentClient(),
-                "ws://partner-service:8032/instruments"
+                "ws://partner-service:8032/instruments" // TODO configure
         );
         manager.setAutoStartup(true);
         return manager;

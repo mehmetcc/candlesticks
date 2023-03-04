@@ -10,7 +10,7 @@ services:
     ports:
       - "8032:8032"
   candlestick-provider:
-    container_name: candlesticks-web
+    container_name: candlestick-provider
     image: candlestick-provider:latest
     build:
       context: .

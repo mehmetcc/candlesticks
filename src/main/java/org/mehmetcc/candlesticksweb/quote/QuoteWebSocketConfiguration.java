@@ -14,7 +14,7 @@ public class QuoteWebSocketConfiguration {
         WebSocketConnectionManager manager = new WebSocketConnectionManager(
                 quoteWebSocketClient(),
                 quoteClient(),
-                "ws://partner-service:8032/quotes"
+                "ws://partner-service:8032/quotes" // TODO configure
         );
         manager.setAutoStartup(true);
         return manager;

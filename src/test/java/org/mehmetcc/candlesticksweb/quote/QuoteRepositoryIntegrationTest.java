@@ -9,7 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,16 +40,16 @@ class QuoteRepositoryIntegrationTest {
 
     @Test
     void shouldFindQuotesInBetween() {
-        var start = LocalDateTime.now();
-        var end = LocalDateTime.now().plusMinutes(1);
-        var first = new Quote(1, 31.31, "isinisin", start);
-        var second = new Quote(1, 31.31, "isinisin", end);
+        var start = LocalDateTime.of(
+                LocalDate.of(2023, 8, 4),
+                LocalTime.of(20, 0, 0));
+        var end = start.plusSeconds(10);
+        var first = new Quote(1, 31.31, "isinisin", start.plusSeconds(1));
+        var second = new Quote(2, 31.321, "isinisin", end);
         repository.save(first);
         repository.save(second);
 
-        assertThat(repository.findAllByDateBetween(start.minusSeconds(1), end))
-                .hasSize(2)
-                .element(0)
-                .isInstanceOf(Quote.class);
+        assertThat(repository.findAllByDateBetween(start, start.plusMinutes(1)))
+                .hasSize(2);
     }
 }
