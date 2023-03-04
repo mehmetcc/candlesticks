@@ -1,4 +1,4 @@
-package org.mehmetcc.candlesticksweb.instrument;
+package org.mehmetcc.candlesticksweb.quote;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,25 +8,26 @@ import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
 @Configuration
-public class InstrumentWebSocketConfiguration {
+public class QuoteWebSocketConfiguration {
     @Bean
-    public WebSocketConnectionManager instrumentWebSocketConnectionManager() {
+    public WebSocketConnectionManager quoteWebSocketConnectionManager() {
         WebSocketConnectionManager manager = new WebSocketConnectionManager(
-                instrumentWebSocketClient(),
-                instrumentClient(),
-                "ws://partner-service:8032/instruments"
+                quoteWebSocketClient(),
+                quoteClient(),
+                "ws://partner-service:8032/quotes"
         );
         manager.setAutoStartup(true);
         return manager;
     }
 
     @Bean
-    public WebSocketClient instrumentWebSocketClient() {
+    public WebSocketClient quoteWebSocketClient() {
         return new StandardWebSocketClient();
     }
 
     @Bean
-    public WebSocketHandler instrumentClient() {
-        return new InstrumentClient();
+    public WebSocketHandler quoteClient() {
+        return new QuoteClient();
     }
+
 }
