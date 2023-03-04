@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface QuoteRepository extends JpaRepository<Quote, Integer> {
-    List<Quote> findAllByDateBetween(LocalDateTime publicationTimeStart, LocalDateTime publicationTimeEnd);
+    List<Quote> findAllByDateBetween(LocalDateTime start, LocalDateTime end);
 }

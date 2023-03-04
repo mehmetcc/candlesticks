@@ -1,6 +1,8 @@
 package org.mehmetcc.candlesticksweb.quote;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +22,5 @@ public class Quote {
 
     private String isin;
 
-    @Column(name = "received_at")
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime date;
 }

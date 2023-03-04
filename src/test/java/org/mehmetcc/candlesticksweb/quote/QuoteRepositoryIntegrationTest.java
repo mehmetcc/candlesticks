@@ -39,7 +39,7 @@ class QuoteRepositoryIntegrationTest {
     @Test
     void shouldFindQuotesInBetween() {
         var start = LocalDateTime.now();
-        var end = LocalDateTime.now().plusSeconds(59);
+        var end = LocalDateTime.now().plusMinutes(1);
         var first = new Quote(1, 31.31, "isinisin", start);
         var second = new Quote(1, 31.31, "isinisin", end);
         repository.save(first);
