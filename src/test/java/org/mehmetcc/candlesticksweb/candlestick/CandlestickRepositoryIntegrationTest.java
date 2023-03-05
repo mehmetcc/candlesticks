@@ -10,6 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,12 +87,18 @@ class CandlestickRepositoryIntegrationTest {
                 .highestPrice(3.1)
                 .lowestPrice(1.0)
                 .closingPrice(3.1)
-                .closingTimestamp(now.plusSeconds(15))
+                .closingTimestamp(now.plusSeconds(50))
                 .build();
-        var candlesticks = Arrays.asList(isbnk, garan);
+        var candlesticks = new ArrayList<Candlestick>();
+        candlesticks.add(isbnk);
+        candlesticks.add(garan);
+        repository.saveAll(candlesticks);
         // Interaction
         var found = repository.findAllByIsin("garan");
         // Assertion
-        assertThat(found).isNotNull().isEqualTo(garan);
+        assertThat(found).isNotEmpty()
+                .hasSize(1)
+                .element(0)
+                .isEqualTo(garan);
     }
 }
