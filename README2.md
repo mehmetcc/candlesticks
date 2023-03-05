@@ -19,6 +19,10 @@ Admin username and passport for the pgAdmin can be found inside docker-compose.y
 postgres,
 the database host should be specified as: `host.docker.internal`
 
+There is a Scheduled task that runs every minute to calculate candlesticks. Hence, it might take a minute to see the
+full
+output at the startup.
+
 ## Description
 
 So this project was rather interesting because I did a very similar thing at least three times before. (I used to work
@@ -50,24 +54,20 @@ good-old Servlet Spring. It is not fancy nor flashy, but gets the job done rathe
 task
 took something around 6-7 hours) I tried to follow up some basic DDD convention, data-centric packages, testing
 behaviour
-rather than units (there are still unit tests) etc. But I could not say this is pure convention. Also, I did not want
-to do configuration (other than injecting some variables to set up jdbc context) because there are simply two things to
-configure:
-
-1. Endpoints
-2. The hard cap of 30 candlesticks
-
-Besides, I don't like how Spring handles Configuration, even though I understand convention over configuration, there
-should be a convenient way to load configuration from a file to a _*TYPE*_ so yeah. Also, whenever I start writing
-Spring,
-I find myself doing more configuration than any other framework and language out there so yeah.
+rather than units (there are still unit tests) etc. But I could not say the project is pure convention. The data is
+being
+written to postgresql and calculated with a scheduled task every minute. I don't delete data, because we are literally
+recording money and an auditor would have a field day if there was a single iota of data deleted. I tried to use
+Spring-Data
+DSL as much as possible to generate queries, but I always try to favor readability and extendability over performance so
+at some point you will see stream operations that would be much more performant with pre-Java 8 methods and/or could
+have
+been memoized, however the code would have been less readable and definitely less extendable.
 
 As for the future development, if we want to have more scalable system in the future, working reactive would make sense.
 also, distributing the load to other services would be better, delegate db io to one service, consume sockets with
 another
 and calculate and serve candlesticks with a third one. make them all communicate with a bus.
 
-## TODO
-
-* Integrate proper configuration for endpoints inside configuration classes
-* Integrate vavr to quote and instrument packages
+The second question is more or less about registries and service discovery. I would advise using something along the
+lines of Netflix's Eureka to locate failing instances and orchestrate their reintroduction.

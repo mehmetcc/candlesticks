@@ -3,3 +3,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+application:
+  websocket:
+    endpoints:
+      instruments: "ws://partner-service:8032/instruments"
+      quotes: "ws://partner-service:8032/quotes"
+  candlestick:
+    limit: 30

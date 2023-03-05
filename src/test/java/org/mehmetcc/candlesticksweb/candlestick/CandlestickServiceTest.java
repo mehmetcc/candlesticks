@@ -1,11 +1,14 @@
 package org.mehmetcc.candlesticksweb.candlestick;
 
 import io.vavr.control.Either;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -15,12 +18,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
+@SpringBootTest
 class CandlestickServiceTest {
     @Mock
     private CandlestickRepository repository;
 
     @InjectMocks
     private CandlestickService service;
+
+    @BeforeEach
+    void setup() {
+        ReflectionTestUtils.setField(service, "candlestickLimit", 30);
+    }
 
     @Test
     void shouldFillIn() {

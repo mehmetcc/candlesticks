@@ -2,6 +2,7 @@ package org.mehmetcc.candlesticksweb.candlestick;
 
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,9 @@ import java.util.List;
 public class CandlestickService {
     public record CandlestickServiceException(String message, HttpStatus status) {
     }
+
+    @Value("${application.candlestick.limit}")
+    private Integer candlestickLimit;
 
     private final CandlestickRepository repository;
 
@@ -39,7 +43,7 @@ public class CandlestickService {
                 .findAllByIsin(isin)
                 .stream()
                 .sorted(Comparator.comparing(Candlestick::getOpeningTimestamp))
-                .limit(30) // TODO configure
+                .limit(candlestickLimit)
                 .toList());
     }
 }
