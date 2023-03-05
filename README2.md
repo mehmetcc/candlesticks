@@ -15,13 +15,23 @@ The project consists of:
 3. A postgres instance
 4. pgAdmin4, to query the database
 
-Admin username and passport for the pgAdmin can be found inside docker-compose.yaml. In order to connect from pgAdmin to
+Admin username and passport for the pgAdmin, which runs on port 5050 can be found inside docker-compose.yaml. In order
+to connect from pgAdmin to
 postgres,
 the database host should be specified as: `host.docker.internal`
 
 There is a Scheduled task that runs every minute to calculate candlesticks. Hence, it might take a minute to see the
 full
-output at the startup.
+output at the startup. There are some unit tests and integration tests, IntelliJ tells me line coverage is 89% but I
+always
+take these stats with a grain of salt. I could not write Integration tests for Websocket clients because of some weird
+bug with Spring while testing, so I uncoupled most of the logic to a Service class and tested it instead.
+
+Querying works as the following:
+
+```bash
+http://localhost:8080/candlesticks?isin=LT4758685288
+```
 
 ## Description
 
