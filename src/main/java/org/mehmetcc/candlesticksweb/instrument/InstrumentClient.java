@@ -13,7 +13,17 @@ public class InstrumentClient extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
-        service.match(message.getPayload());
+        service.match(message.getPayload())
+                .fold(
+                        error -> {
+                            log.error(error);
+                            return error;
+                        },
+                        success -> {
+                            log.debug("Instrument ops: " + success.toString());
+                            return success;
+                        }
+                );
     }
 
     @Override

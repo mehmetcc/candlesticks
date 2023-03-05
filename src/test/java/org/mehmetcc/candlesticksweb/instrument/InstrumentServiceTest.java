@@ -8,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -26,11 +25,12 @@ class InstrumentServiceTest {
         var persisted = new Instrument("LS342I184454", "elementum eos accumsan orci constituto antiopam");
         // Interaction
         var event = service.match(json);
+        var got = event.get();
         // Assertion
-        assertThat(event.getType())
+        assertThat(got.getType())
                 .isNotNull()
                 .isEqualTo(InstrumentEventType.ADD);
-        assertThat(event.getData())
+        assertThat(got.getData())
                 .isNotNull()
                 .isInstanceOf(Instrument.class)
                 .isEqualTo(persisted);
@@ -43,23 +43,24 @@ class InstrumentServiceTest {
         var deleted = new Instrument("LS342I184454", "elementum eos accumsan orci constituto antiopam");
         // Interaction
         var event = service.match(json);
+        var got = event.get();
         // Assertion
-        assertThat(event.getType())
+        assertThat(got.getType())
                 .isNotNull()
                 .isEqualTo(InstrumentEventType.DELETE);
-        assertThat(event.getData())
+        assertThat(got.getData())
                 .isNotNull()
                 .isInstanceOf(Instrument.class)
                 .isEqualTo(deleted);
     }
 
     @Test
-    void invalidJsonGiven_shouldThrowException() {
+    void invalidJsonGiven_shouldCapsulateLeftProjection() {
         // Data prep
-        var json = "{\"type\":\"DELETE\tum eos accumsan orci constituto antiopam\"}}";
+        var json = "{i am illegal}";
         // Interaction
-        var caught = assertThrows(NullPointerException.class, () -> service.match(json));
+        var caught = service.match(json);
         // Assertions
-        assertThat(caught).isInstanceOf(NullPointerException.class);
+        assertThat(caught.isLeft()).isTrue();
     }
 }

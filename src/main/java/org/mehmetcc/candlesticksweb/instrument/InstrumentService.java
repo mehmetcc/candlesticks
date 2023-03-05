@@ -2,6 +2,7 @@ package org.mehmetcc.candlesticksweb.instrument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vavr.control.Either;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,27 +20,32 @@ public class InstrumentService {
         this.mapper = new ObjectMapper();
     }
 
-    public InstrumentEvent match(String payload) {
-        var event = readJson(payload);
-        return matchEventType(event);
+    public Either<String, InstrumentEvent> match(String payload) {
+        return readJson(payload)
+                .flatMap(this::checkNullity)
+                .flatMap(this::matchEventType);
     }
 
-    private InstrumentEvent readJson(String payload) {
-        InstrumentEvent json = null;
+    private Either<String, InstrumentEvent> readJson(String payload) {
+        InstrumentEvent json;
         try {
             json = mapper.readValue(payload, InstrumentEvent.class);
         } catch (JsonProcessingException error) {
-            log.error(error.getMessage());
+            return Either.left(error.getMessage());
         }
-        return json;
+        return Either.right(json);
     }
 
-    private InstrumentEvent matchEventType(InstrumentEvent event) {
-        Objects.requireNonNull(event);
+    Either<String, InstrumentEvent> checkNullity(InstrumentEvent event) {
+        if (Objects.isNull(event)) return Either.left(new NullPointerException().getMessage());
+        return Either.right(event);
+    }
+
+    private Either<String, InstrumentEvent> matchEventType(InstrumentEvent event) {
         if (event.getType() == InstrumentEventType.DELETE) {
             repository.deleteById(event.getData().getIsin());
         }
         repository.save(event.getData());
-        return event;
+        return Either.right(event);
     }
 }

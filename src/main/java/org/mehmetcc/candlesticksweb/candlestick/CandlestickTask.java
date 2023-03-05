@@ -30,7 +30,7 @@ public class CandlestickTask {
 
         var grouped = fetched.stream()
                 .collect(Collectors.groupingBy(Quote::getIsin)); // lmao streams don't do groupBy
-        var candlesticks = grouped.entrySet().stream().map(current ->
+        var candlesticks = grouped.entrySet().parallelStream().map(current ->
                         Candlestick.builder()
                                 .openingTimestamp(now)
                                 .isin(current.getKey())

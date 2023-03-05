@@ -9,7 +9,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -30,19 +29,21 @@ class QuoteServiceTest {
         // Stubbing
         when(repository.save(any(Quote.class))).thenReturn(expected);
         // Interaction
-        var event = service.persist(json);
+        var event = service.match(json);
+        var got = event.get();
         // Assertion
-        assertThat(event).isNotNull()
+        assertThat(event.isRight()).isTrue();
+        assertThat(got).isNotNull()
                 .isEqualTo(expected);
     }
 
     @Test
     void invalidJsonGiven_shouldThrowException() {
         // Data prep
-        var json = "{\"data\": {\"sffsddsffds\": 1145.1385,\"isin\": \"VNB844277627\"},\"type\": \"QUOTE\"}";
+        var json = "{i am invalid}";
         // Interaction
-        var caught = assertThrows(NullPointerException.class, () -> service.persist(json));
+        var caught = service.match(json);
         // Assertions
-        assertThat(caught).isInstanceOf(NullPointerException.class);
+        assertThat(caught.isLeft()).isTrue();
     }
 }
